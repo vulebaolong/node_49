@@ -133,7 +133,7 @@ CREATE TABLE `Chats` (
 	`userId` int NOT NULL,
 	`roomId` VARCHAR(255) NOT NULL,
 	
-	FOREIGN KEY (`userIdSender`) REFERENCES Users (`id`),
+	FOREIGN KEY (`userId`) REFERENCES Users (`id`),
 	
 	-- mặc định luôn luôn có
 	`deletedBy` INT NOT NULL DEFAULT 0,
