@@ -1,13 +1,13 @@
 import express from "express";
-import { DataTypes, Sequelize } from "sequelize";
-import initModels from "./src/models/init-models";
-import rootRouter from "./src/routers/root.router";
-import { DATABASE_URL } from "./src/common/constant/app.constant";
 import { handleError } from "./src/common/helpers/handle-err.helper";
+import rootRouter from "./src/routers/root.router";
+import logApi from "./src/common/morgan/init.morgan";
 var app = express();
 
 // middleware
 app.use(express.json());
+app.use(logApi);
+
 
 // gắn rootRouter vào app
 // app: http://localhost:3069
@@ -20,6 +20,11 @@ app.listen(3069, () => {
    console.log(`Server running on port http://localhost:3069`);
 });
 
+/**
+ * QUAN TRỌNG
+ * express version thấp hơn 5 thì sẽ cần bọc try/catch để xử lý lỗi
+ * express version từ 5 trở lên thì không cần nữa
+ */
 
 /**
  * express: lõi để xây dựng BE -> API
@@ -28,4 +33,6 @@ app.listen(3069, () => {
  * sequelize: ORM giúp tương tác với DB bằng function
  * sequelize-auto: giúp kéo table vào trong code và tự tạo ra model (DATABASE FIRST),
  * extensionless: giúp import file mà không cần phải thêm đuôi js
+ * morgan: giúp show log ra terminal khi có 1 api gọi tới
+ * chalk: tô màu cho terminal đẹp đẹp
  */

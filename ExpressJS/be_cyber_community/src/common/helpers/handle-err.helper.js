@@ -5,6 +5,7 @@ export const handleError = (err, req, res, next) => {
 
    // (new Error()).
 
-   const resData = responseError(err?.message, 400, err?.stack)
+   // const resData = responseError(err?.message, err?.code, isProduction === "true"? null : err?.stack)
+   const resData = responseError(err?.message, err?.code, err?.stack)
    res.status(resData.statusCode).json(resData);
 };
