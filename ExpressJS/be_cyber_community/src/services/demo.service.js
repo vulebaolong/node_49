@@ -40,6 +40,17 @@ const demoService = {
       return rows;
    },
    sequelize: async () => {
+      // Lỗi không kiểm soát được
+      // console.log(abc);
+
+      // Lỗi kiểm soát được
+      const passUser = "123"
+      const passDB = "1234"
+      if(passUser !== passDB) {
+         BadrequestException
+         throw new Error("Pass sai") 
+      }
+
       const listRole1 = await Roles.findAll();
 
       const listRole2 = await models.Roles.findAll();

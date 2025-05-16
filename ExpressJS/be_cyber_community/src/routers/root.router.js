@@ -7,5 +7,6 @@ const rootRouter = express.Router()
 // demoRouter: /demo
 // demoRouter = app + demoRouter: http://localhost:3069/demo
 rootRouter.use("/demo", demoRouter)
+rootRouter.use("/demo", (req, res, next) => { res.json(`sử dụng next('router')`) })
 
 export default rootRouter

@@ -33,9 +33,15 @@ const demoController = {
       res.status(resData.statusCode).json(resData);
    },
    sequelize: async (req, res, next) => {
-      const result = await demoService.sequelize();
-      const resData = responseSuccess(result, "Gọi API sequelize thành công");
-      res.status(resData.statusCode).json(resData);
+      try {
+         console.log(req.long, res.long);
+         const result = await demoService.sequelize();
+         const resData = responseSuccess(result, "Gọi API sequelize thành công");
+         res.status(resData.statusCode).json(resData);
+      } catch (error) {
+         console.log({ error: error.message });
+         next(error);
+      }
    },
 };
 
