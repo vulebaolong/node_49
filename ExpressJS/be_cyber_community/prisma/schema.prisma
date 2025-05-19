@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Articles {
+  id        Int       @id @default(autoincrement())
+  title     String?   @db.VarChar(255)
+  content   String?   @db.Text
+  imageUrl  String?   @db.VarChar(500)
+  views     Int       @default(0)
+  userId    Int
+  deletedBy Int       @default(0)
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime? @db.Timestamp(0)
+  createdAt DateTime  @default(now()) @db.Timestamp(0)
+  updatedAt DateTime  @default(now()) @db.Timestamp(0)
+}
+
+model Chats {
+  id        Int       @id @default(autoincrement())
+  message   String?   @db.Text
+  userId    Int
+  roomId    String    @db.VarChar(255)
+  deletedBy Int       @default(0)
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime? @db.Timestamp(0)
+  createdAt DateTime  @default(now()) @db.Timestamp(0)
+  updatedAt DateTime  @default(now()) @db.Timestamp(0)
+  Users     Users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chats_ibfk_1")
+
+  @@index([userId], map: "userId")
+}
+
+model Permissions {
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(255)
+  endpoint       String           @db.VarChar(255)
+  method         String           @db.VarChar(100)
+  module         String           @db.VarChar(100)
+  deletedBy      Int              @default(0)
+  isDeleted      Boolean          @default(false)
+  deletedAt      DateTime         @default(now()) @db.Timestamp(0)
+  createdAt      DateTime         @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime         @default(now()) @db.Timestamp(0)
+  RolePermission RolePermission[]
+}
+
+model RolePermission {
+  id           Int         @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  isActive     Boolean?    @default(true)
+  deletedBy    Int         @default(0)
+  isDeleted    Boolean     @default(false)
+  deletedAt    DateTime?   @db.Timestamp(0)
+  createdAt    DateTime    @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime    @default(now()) @db.Timestamp(0)
+  Roles        Roles       @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "RolePermission_ibfk_1")
+  Permissions  Permissions @relation(fields: [permissionId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "RolePermission_ibfk_2")
+
+  @@index([permissionId], map: "permissionId")
+  @@index([roleId], map: "roleId")
+}
+
+model Roles {
+  id             Int              @id @default(autoincrement())
+  name           String?          @db.VarChar(255)
+  description    String?          @db.VarChar(255)
+  isActive       Boolean?
+  deletedBy      Int?
+  isDeleted      Boolean          @default(false)
+  deletedAt      DateTime?        @db.Timestamp(0)
+  createdAt      DateTime         @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime         @default(now()) @db.Timestamp(0)
+  RolePermission RolePermission[]
+  Users          Users[]
+}
+
+model Users {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique(map: "email") @db.VarChar(255)
+  fullName   String?   @db.VarChar(255)
+  avatar     String?   @db.VarChar(255)
+  password   String?   @db.VarChar(255)
+  facebookId String?   @unique(map: "facebookId") @db.VarChar(255)
+  googleId   String?   @unique(map: "googleId") @db.VarChar(255)
+  roleId     Int       @default(2)
+  deletedBy  Int       @default(0)
+  isDeleted  Boolean   @default(false)
+  deletedAt  DateTime? @db.Timestamp(0)
+  createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  updatedAt  DateTime  @default(now()) @db.Timestamp(0)
+  Chats      Chats[]
+  Roles      Roles     @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_ibfk_1")
+
+  @@index([roleId], map: "roleId")
+}

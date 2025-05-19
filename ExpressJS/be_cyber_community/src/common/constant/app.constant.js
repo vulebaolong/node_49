@@ -1,1 +1,8 @@
-export const DATABASE_URL = `mysql://root:1234@localhost:3307/db_cyber_community`;
+import 'dotenv/config'
+
+export const DATABASE_URL = process.env.DATABASE_URL;
+
+console.log({
+   DATABASE_URL,
+   // process: process.env
+});

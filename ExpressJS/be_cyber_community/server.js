@@ -2,12 +2,16 @@ import express from "express";
 import { handleError } from "./src/common/helpers/handle-err.helper";
 import rootRouter from "./src/routers/root.router";
 import logApi from "./src/common/morgan/init.morgan";
+import cors from "cors"
+
 var app = express();
 
 // middleware
 app.use(express.json());
 app.use(logApi);
-
+app.use(cors({
+   origin: ["https://google.com", "http://localhost:3000"]
+}))
 
 // gắn rootRouter vào app
 // app: http://localhost:3069
@@ -35,4 +39,9 @@ app.listen(3069, () => {
  * extensionless: giúp import file mà không cần phải thêm đuôi js
  * morgan: giúp show log ra terminal khi có 1 api gọi tới
  * chalk: tô màu cho terminal đẹp đẹp
+ * dotenv: để đọc biến trong file .env
+ * prisma: ORM tương tác DB
+ *    - npx prisma db pull
+ *    - npx prisma generate
+ * cors: mở bảo vệ CORS
  */
