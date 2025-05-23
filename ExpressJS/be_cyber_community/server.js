@@ -44,4 +44,5 @@ app.listen(3069, () => {
  *    - npx prisma db pull
  *    - npx prisma generate
  * cors: mở bảo vệ CORS
+ * bcrypt: mã hoá password
  */
