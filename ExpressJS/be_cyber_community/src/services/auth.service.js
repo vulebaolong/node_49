@@ -1,6 +1,10 @@
 import { BadrequestException } from "../common/helpers/exception.helper";
 import prisma from "../common/prisma/init.prisma";
 import bcrypt from "bcrypt";
+import tokenService from "./token.service";
+import { OAuth2Client } from "google-auth-library";
+import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../common/constant/app.constant";
+import jwt from "jsonwebtoken";
 
 const authService = {
    register: async (req) => {
@@ -55,12 +59,26 @@ const authService = {
       }
 
       // token: access-token | refresh-token
-      const tokens = {
-         accessToken: "",
-         refreshToken: "",
-      };
+      const tokens = tokenService.createTokens(userExist.id);
 
       return tokens;
+   },
+   getInfo: async (req) => {
+      delete req.user.password;
+      return req.user;
+   },
+   googleLogin: async (req) => {
+      const { code } = req.body;
+
+      const oAuth2Client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, "postmessage");
+
+      const { tokens } = await oAuth2Client.getToken(code);
+
+      const decode = jwt.decode(tokens.id_token);
+
+      console.log({ code, id_token: tokens.id_token, decode });
+
+      return `googleLogin`;
    },
 };
 

@@ -6,3 +6,10 @@ export class BadrequestException extends Error {
       this.code = statusCodes.BAD_REQUEST;
    }
 }
+
+export class UnauthorizedException extends Error {
+   constructor(message = "UnauthorizedException") {
+      super(message);
+      this.code = statusCodes.UNAUTHORIZED;
+   }
+}

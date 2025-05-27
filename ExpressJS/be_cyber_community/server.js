@@ -45,4 +45,5 @@ app.listen(3069, () => {
  *    - npx prisma generate
  * cors: mở bảo vệ CORS
  * bcrypt: mã hoá password
+ * jsonwebtoken: tạo token / thay thế việc xác minh bằng email / password
  */

@@ -12,6 +12,16 @@ const authController = {
       const resData = responseSuccess(result);
       res.status(resData.statusCode).json(resData);
    },
+   getInfo: async (req, res) => {
+      const result = await authService.getInfo(req);
+      const resData = responseSuccess(result);
+      res.status(resData.statusCode).json(resData);
+   },
+   googleLogin: async (req, res) => {
+      const result = await authService.googleLogin(req);
+      const resData = responseSuccess(result);
+      res.status(resData.statusCode).json(resData);
+   },
 };
 
 export default authController;
