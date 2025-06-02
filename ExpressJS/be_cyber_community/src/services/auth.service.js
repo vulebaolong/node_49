@@ -1,4 +1,4 @@
-import { BadrequestException } from "../common/helpers/exception.helper";
+import { BadrequestException, UnauthorizedException } from "../common/helpers/exception.helper";
 import prisma from "../common/prisma/init.prisma";
 import bcrypt from "bcrypt";
 import tokenService from "./token.service";
@@ -72,13 +72,53 @@ const authService = {
 
       const oAuth2Client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, "postmessage");
 
-      const { tokens } = await oAuth2Client.getToken(code);
+      // Nếu vượt qua được dòng code này => google đã xác minh cho mình người dùng này hợp lệ
+      const { tokens: tokensGoogle } = await oAuth2Client.getToken(code);
 
-      const decode = jwt.decode(tokens.id_token);
+      const decode = jwt.decode(tokensGoogle.id_token);
 
-      console.log({ code, id_token: tokens.id_token, decode });
+      console.log({ code, id_token: tokensGoogle.id_token, decode });
 
-      return `googleLogin`;
+      const { email, email_verified, name, picture } = decode;
+
+      if (!email_verified) throw new BadrequestException("Email chưa được xác thực");
+
+      let userExist = await prisma.users.findUnique({
+         where: {
+            email: email,
+         },
+      });
+
+      if (!userExist) {
+         userExist = await prisma.users.create({
+            data: {
+               email: email,
+               fullName: name,
+               avatar: picture,
+            },
+         });
+      }
+
+      console.log({ userExist });
+
+      const tokens = tokenService.createTokens(userExist.id);
+
+      console.log({ tokens });
+
+      return tokens;
+   },
+   refreshToken: async (req) => {
+      const { accessToken, refreshToken } = req.body;
+
+      const decodeRefreshToken = tokenService.verifyRefreshToken(refreshToken);
+      const decodeAccessToken = tokenService.verifyAccessToken(accessToken, true);
+
+      if (decodeRefreshToken.userId !== decodeAccessToken.userId) {
+         throw new UnauthorizedException("Refresh Token không thành công");
+      }
+      const tokens = tokenService.createTokens(decodeRefreshToken.userId);
+
+      return tokens;
    },
 };
 

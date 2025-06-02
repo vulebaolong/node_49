@@ -16,6 +16,16 @@ const colorCode = (code) => {
 };
 
 const logApi = morgan(function (tokens, req, res) {
+   const flag = [];
+   if (req.isProtect) {
+      flag.push(chalk.magenta("protect"));
+   }
+   if (req.isCheckPermision) {
+      flag.push(chalk.magenta("permission"));
+   }
+
+   const mid = flag.length > 0 ? `[${flag.join(" | ")}]` : "";
+
    return [
       chalk.gray(new Date().toLocaleString()),
       "\t",
@@ -26,6 +36,7 @@ const logApi = morgan(function (tokens, req, res) {
       "-",
       tokens["response-time"](req, res),
       "ms",
+      mid,
    ].join(" ");
 });
 

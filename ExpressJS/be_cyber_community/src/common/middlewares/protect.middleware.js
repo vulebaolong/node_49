@@ -5,6 +5,8 @@ import tokenService from "../../services/token.service";
 import prisma from "../prisma/init.prisma";
 
 const protect = async (req, res, next) => {
+   req.isProtect = true;
+
    const authHeader = req.headers?.authorization || "";
    const [type, token] = authHeader.split(" ");
    if (!token) {
@@ -17,6 +19,7 @@ const protect = async (req, res, next) => {
    // kiểm tra token
    // nếu chạy qua là token hợp lệ, và trả về payload
    // nếu có lỗi thì tự động throw lỗi (jwt.verify), chúng ta không cần throw
+   console.log({ token });
    const decode = tokenService.verifyAccessToken(token);
 
    const user = await prisma.users.findUnique({
@@ -25,7 +28,7 @@ const protect = async (req, res, next) => {
       },
    });
 
-   req.user = user
+   req.user = user;
 
    console.log({
       token,

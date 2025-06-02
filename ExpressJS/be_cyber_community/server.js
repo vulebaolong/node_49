@@ -47,3 +47,11 @@ app.listen(3069, () => {
  * bcrypt: mã hoá password
  * jsonwebtoken: tạo token / thay thế việc xác minh bằng email / password
  */
+
+/**
+ * 
+const data = pm.response.json()
+
+pm.globals.set("accessToken",  data.data.accessToken )
+pm.globals.set("refreshToken",  data.data.refreshToken )
+ */
