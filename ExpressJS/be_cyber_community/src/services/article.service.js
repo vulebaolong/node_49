@@ -12,7 +12,7 @@ const articleService = {
          console.log(key, value);
          if (value === "" || value === null || value === undefined) {
             delete filters[key];
-            return
+            return;
          }
          if (typeof value === "string") {
             filters[key] = { contains: value };
@@ -52,6 +52,24 @@ const articleService = {
          totalPage: totalPage, // Tổng cộng có bao nhiêu trang
          items: articles,
       };
+   },
+   create: async function (req) {
+      const userID = 1;
+      const fromData = "";
+
+      const tile = fromData.get("tile");
+      const fileImage = fromData.get("tile");
+      // upload file clouddinary => urlImage online của tấm hình
+      const urlImage = ``;
+
+      await prisma.articles.create({
+         data: {
+            title: tile,
+            fileImage: urlImage,
+         },
+      });
+
+      return true;
    },
 };
 
