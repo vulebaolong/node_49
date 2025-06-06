@@ -5,6 +5,7 @@ import tokenService from "./token.service";
 import { OAuth2Client } from "google-auth-library";
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../common/constant/app.constant";
 import jwt from "jsonwebtoken";
+import sendMail from "../common/nodemailer/init.nodemailer";
 
 const authService = {
    register: async (req) => {
@@ -33,7 +34,9 @@ const authService = {
          },
       });
 
-      delete userNew.password;
+      console.log({ userNew });
+
+      // delete userNew.password;
 
       return userNew;
    },
@@ -60,6 +63,9 @@ const authService = {
 
       // token: access-token | refresh-token
       const tokens = tokenService.createTokens(userExist.id);
+
+      // sendMail(userExist.email)
+      sendMail("vulebaolong@gmail.com");
 
       return tokens;
    },

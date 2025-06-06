@@ -2,16 +2,18 @@ import express from "express";
 import { handleError } from "./src/common/helpers/handle-err.helper";
 import rootRouter from "./src/routers/root.router";
 import logApi from "./src/common/morgan/init.morgan";
-import cors from "cors"
+import cors from "cors";
 
 var app = express();
 
 // middleware
 app.use(express.json());
 app.use(logApi);
-app.use(cors({
-   origin: ["https://google.com", "http://localhost:3000"]
-}))
+app.use(
+   cors({
+      origin: ["https://google.com", "http://localhost:3000"],
+   })
+);
 
 // gắn rootRouter vào app
 // app: http://localhost:3069
@@ -46,6 +48,9 @@ app.listen(3069, () => {
  * cors: mở bảo vệ CORS
  * bcrypt: mã hoá password
  * jsonwebtoken: tạo token / thay thế việc xác minh bằng email / password
+ * nodemailer: gửi email
+ * jest: giúp viết unit test
+ * swagger-ui-express: tích hợp swagger
  */
 
 /**
@@ -54,4 +59,8 @@ const data = pm.response.json()
 
 pm.globals.set("accessToken",  data.data.accessToken )
 pm.globals.set("refreshToken",  data.data.refreshToken )
+ */
+
+/*
+"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --watch",
  */
