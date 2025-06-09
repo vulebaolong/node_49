@@ -3,6 +3,11 @@ import { handleError } from "./src/common/helpers/handle-err.helper";
 import rootRouter from "./src/routers/root.router";
 import logApi from "./src/common/morgan/init.morgan";
 import cors from "cors";
+import { createHandler } from "graphql-http/lib/use/express";
+import schema from "./src/common/graphql/schema.graphql";
+import root from "./src/common/graphql/root.graphql";
+import { ruruHTML } from "ruru/server";
+import protectGraphQL from "./src/common/graphql/protect.graphql";
 
 var app = express();
 
@@ -12,6 +17,27 @@ app.use(logApi);
 app.use(
    cors({
       origin: ["https://google.com", "http://localhost:3000"],
+   })
+);
+app.use(express.static("."))
+
+// Serve the GraphiQL IDE.
+app.get("/ruru", (_req, res) => {
+   res.type("html");
+   res.end(ruruHTML({ endpoint: "/graphql" }));
+});
+// Create and use the GraphQL handler.
+app.all(
+   "/graphql",
+   createHandler({
+      schema: schema,
+      rootValue: root,
+      context: async (req) => {
+         const user = await protectGraphQL(req);
+         return {
+            user: user,
+         };
+      },
    })
 );
 
@@ -51,6 +77,10 @@ app.listen(3069, () => {
  * nodemailer: gửi email
  * jest: giúp viết unit test
  * swagger-ui-express: tích hợp swagger
+ * graphql-http: giúp tương tác với graphql
+ * graphql: core của graphql
+ * ruru: công cụ gọi api graphql giống postman
+ * multer: giúp upload file
  */
 
 /**
