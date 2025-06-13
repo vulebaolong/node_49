@@ -1,8 +1,8 @@
 import express from "express";
 import { userController } from "../controllers/user.controller";
-
-import multer from "multer";
-const upload = multer({ dest: "images/" });
+import uploadLocal from "../common/multer/local.multer";
+import protect from "../common/middlewares/protect.middleware";
+import uploadcloud from "../common/multer/cloud.multer";
 
 const userRouter = express.Router();
 
@@ -13,7 +13,7 @@ userRouter.get("/:id", userController.findOne);
 userRouter.patch("/:id", userController.update);
 userRouter.delete("/:id", userController.remove);
 
-userRouter.post("/avatar-local", upload.single("avatar"), userController.avatarLocal);
-userRouter.post("/avatar-cloud", userController.avatarCloud);
+userRouter.post("/avatar-local", protect, uploadLocal.single("avatar"), userController.avatarLocal);
+userRouter.post("/avatar-cloud", protect, uploadcloud.single("avatar"), userController.avatarCloud);
 
 export default userRouter;

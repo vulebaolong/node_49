@@ -26,6 +26,9 @@ const protect = async (req, res, next) => {
       where: {
          id: decode.userId,
       },
+      include: {
+         Roles: true
+      }
    });
 
    req.user = user;

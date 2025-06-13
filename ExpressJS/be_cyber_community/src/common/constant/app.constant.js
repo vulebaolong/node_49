@@ -11,6 +11,10 @@ export const REFRESH_TOKEN_EXPIRES = process.env.REFRESH_TOKEN_EXPIRES;
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
+export const CLOUDINARY_NAME = process.env.CLOUDINARY_NAME;
+export const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
+export const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
+
 console.log({
    DATABASE_URL,
    ACCESS_TOKEN_SECRET,
@@ -19,5 +23,8 @@ console.log({
    REFRESH_TOKEN_EXPIRES,
    GOOGLE_CLIENT_ID,
    GOOGLE_CLIENT_SECRET,
+   CLOUDINARY_NAME,
+   CLOUDINARY_API_KEY,
+   CLOUDINARY_API_SECRET
    // process: process.env
 });

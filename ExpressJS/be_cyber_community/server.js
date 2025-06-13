@@ -81,6 +81,7 @@ app.listen(3069, () => {
  * graphql: core của graphql
  * ruru: công cụ gọi api graphql giống postman
  * multer: giúp upload file
+ * cloudinary: upload hình ảnh lên đám mây
  */
 
 /**
