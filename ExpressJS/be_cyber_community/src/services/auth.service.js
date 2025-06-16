@@ -101,6 +101,7 @@ const authService = {
                email: email,
                fullName: name,
                avatar: picture,
+               googleId: decode.sub
             },
          });
       }

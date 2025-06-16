@@ -8,6 +8,8 @@ import schema from "./src/common/graphql/schema.graphql";
 import root from "./src/common/graphql/root.graphql";
 import { ruruHTML } from "ruru/server";
 import protectGraphQL from "./src/common/graphql/protect.graphql";
+import { createServer } from "http";
+import initSocket from "./src/common/socket/init.socket";
 
 var app = express();
 
@@ -19,7 +21,7 @@ app.use(
       origin: ["https://google.com", "http://localhost:3000"],
    })
 );
-app.use(express.static("."))
+app.use(express.static("."));
 
 // Serve the GraphiQL IDE.
 app.get("/ruru", (_req, res) => {
@@ -48,7 +50,11 @@ app.use(rootRouter);
 // Nên để cuối cùng
 app.use(handleError);
 
-app.listen(3069, () => {
+const httpServer = createServer(app);
+
+initSocket(httpServer);
+
+httpServer.listen(3069, () => {
    console.log(`Server running on port http://localhost:3069`);
 });
 
@@ -82,6 +88,7 @@ app.listen(3069, () => {
  * ruru: công cụ gọi api graphql giống postman
  * multer: giúp upload file
  * cloudinary: upload hình ảnh lên đám mây
+ * socket.io: realtime hỗ trợ chức năng chat
  */
 
 /**
