@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import prisma from "../prisma/init.prisma";
+import { colors } from "chalk";
 
 const initSocket = (httpServer) => {
    const io = new Server(httpServer, {
@@ -12,7 +13,7 @@ const initSocket = (httpServer) => {
       socket.on("CREATE_ROOM", async (data) => {
          try {
             console.log("CREATE_ROOM", data);
-            let { ownerId, targetUserIds } = data;
+            let { ownerId, targetUserIds, name } = data;
 
             targetUserIds = targetUserIds || [];
             const uniqueUserIds = Array.from(new Set([...targetUserIds, ownerId]));
@@ -25,8 +26,9 @@ const initSocket = (httpServer) => {
             }
 
             await prisma.$transaction(async (tx) => {
-               // kiểm tra group chat đã tồn tại hay chưa
-               let chatGroupsExist = await tx.chatGroups.findMany({
+               // tìm nhóm chát đã tồn tại hay chưa ----------------------------------------
+               // lấy ra các nhóm chat mà TẤT CẢ thành viên trong nhóm đều có userId nằm trong uniqueUserIds
+               let chatGroupDraw = await tx.chatGroups.findMany({
                   where: {
                      ChatGroupMembers: {
                         every: {
@@ -34,7 +36,7 @@ const initSocket = (httpServer) => {
                               in: uniqueUserIds,
                            },
                         },
-                        some: {}, // đảm bảo phải có thành viên
+                        some: {}, // đảm bảo phải có ít nhất 1 thành viên, để tránh every hợp lệ cho nhóm rỗng
                      },
                   },
                   include: {
@@ -45,17 +47,24 @@ const initSocket = (httpServer) => {
                      },
                   },
                });
+               // console.dir({ chatGroupDraw }, { depth: null, colors: true });
 
-               console.log({
-                  chatGroupsExist,
+               let chatGroupsExist = chatGroupDraw.find((groupDraw) => {
+                  const isLength = groupDraw.ChatGroupMembers.length === countUserIds;
+                  const isSomeUserId = groupDraw.ChatGroupMembers.every((member) => {
+                     return uniqueUserIds.includes(member.userId);
+                  });
+                  return isLength && isSomeUserId;
                });
+               // ------------------------------------------------------------------------
 
-               if (!chatGroupsExist.length) {
+               // Nếu chatGroup chưa tồn tại thì tạo mới
+               if (!chatGroupsExist) {
                   // tạo ra group chat
-                  chatGroupsExist = await tx.chatGroups.createMany({
+                  chatGroupsExist = await tx.chatGroups.create({
                      data: {
                         ownerId: ownerId,
-                        name: countUserIds <= 2 ? null : "Chat Nhóm",
+                        name: countUserIds <= 2 ? null : name,
                      },
                   });
 
@@ -72,22 +81,26 @@ const initSocket = (httpServer) => {
                   });
                }
 
-               console.log({
-                  chatGroupsExist,
-               });
-
                // luôn tồn tại chatGroupsExist
-               socket.join(`chat${chatGroupsExist[0].id}`);
+               socket.join(`chat${chatGroupsExist.id}`);
 
-               console.log(`id:${ownerId} join room: `, `chat${chatGroupsExist[0].id}`);
+               console.log(`id:${ownerId} join room: `, `chat${chatGroupsExist.id}`);
 
                socket.emit("CREATE_ROOM", {
-                  chatGroupId: chatGroupsExist[0].id,
+                  chatGroupId: chatGroupsExist.id,
                });
             });
          } catch (error) {
             console.log(`Lỗi CREATE_ROOM`, error);
          }
+      });
+
+      socket.on("JOIN_ROOM", (data) => {
+         console.log("JOIN_ROOM", data);
+         socket.join(`chat${data.chatGroupId}`);
+         socket.emit("JOIN_ROOM", {
+            chatGroupId: data.chatGroupId,
+         });
       });
 
       socket.on("SEND_MESSAGE", async (data) => {
@@ -112,10 +125,10 @@ const initSocket = (httpServer) => {
          });
       });
 
-      socket.on("LEAVE_ROOM", (payload) => {
-         console.log("LEAVE_ROOM", payload);
+      socket.on("LEAVE_ROOM", (data) => {
+         console.log("LEAVE_ROOM", data);
 
-         socket.leave("")
+         socket.leave(`chat${data.chatGroupId}`);
       });
    });
 };
