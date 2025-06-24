@@ -13,13 +13,16 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { uploadLocal } from 'src/common/multer/local.multer';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags("User")
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('avatar-local')
-  @UseInterceptors(FileInterceptor('avatar'))
+  @UseInterceptors(FileInterceptor('avatar', uploadLocal))
   avatarLocal(@UploadedFile() file: Express.Multer.File) {
     return this.userService.avatarLocal(file);
   }
@@ -27,7 +30,7 @@ export class UserController {
   @Post('avatar-cloud')
   @UseInterceptors(FileInterceptor('avatar'))
   avatarCloud(@UploadedFile() file: Express.Multer.File) {
-    return this.userService.avatarCloud();
+    return this.userService.avatarCloud(file);
   }
 
   @Post()
