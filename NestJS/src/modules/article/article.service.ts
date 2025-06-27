@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Request } from 'express';
+import { Users } from 'generated/prisma';
 
 @Injectable()
 export class ArticleService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(req: any) {
+  async findAll(req: any, user: Users) {
+    // console.log({ user });
     let { page, pageSize, filters } = req.query;
     page = +page > 0 ? +page : 1;
     pageSize = +pageSize > 0 ? +pageSize : 3;
@@ -24,14 +26,14 @@ export class ArticleService {
       }
     });
 
-    console.log('\n');
-    console.log('Xử lý \t\t', filters);
+    // console.log('\n');
+    // console.log('Xử lý \t\t', filters);
 
     const where = {
       ...filters,
     };
-    console.log('Mong muốn \t', where);
-    console.log('\n');
+    // console.log('Mong muốn \t', where);
+    // console.log('\n');
 
     // (page - 1) * pageSize
     const skip = (page - 1) * pageSize;

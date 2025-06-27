@@ -15,22 +15,24 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { uploadLocal } from 'src/common/multer/local.multer';
 import { ApiTags } from '@nestjs/swagger';
+import { User } from 'src/common/decorator/user.decorator';
+import { Users } from 'generated/prisma';
 
-@ApiTags("User")
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('avatar-local')
   @UseInterceptors(FileInterceptor('avatar', uploadLocal))
-  avatarLocal(@UploadedFile() file: Express.Multer.File) {
-    return this.userService.avatarLocal(file);
+  avatarLocal(@UploadedFile() file: Express.Multer.File, @User() user: Users) {
+    return this.userService.avatarLocal(file, user);
   }
 
   @Post('avatar-cloud')
   @UseInterceptors(FileInterceptor('avatar'))
-  avatarCloud(@UploadedFile() file: Express.Multer.File) {
-    return this.userService.avatarCloud(file);
+  avatarCloud(@UploadedFile() file: Express.Multer.File, @User() user: Users) {
+    return this.userService.avatarCloud(file, user);
   }
 
   @Post()

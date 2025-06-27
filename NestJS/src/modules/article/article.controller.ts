@@ -10,6 +10,9 @@ import {
 import { ArticleService } from './article.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Request } from 'express';
+import { User } from 'src/common/decorator/user.decorator';
+import { Users } from 'generated/prisma';
+import { QueryDto } from './dto/query.dto';
 
 // localhost:3069/article/article
 @Controller('article')
@@ -19,7 +22,7 @@ export class ArticleController {
   @Get()
   async findAll(
     @Query()
-    query: any,
+    query: QueryDto,
     @Param()
     params: any,
     @Headers()
@@ -28,9 +31,13 @@ export class ArticleController {
     body: any,
     @Req()
     req: Request,
+    @User()
+    user: Users,
   ) {
-    console.log({ query, params, headers, body, req });
-    const data = await this.articleService.findAll(req);
+    // console.log({ query, params, headers, body, req });
+    // console.log(req);
+    console.log("---------- Controller => Service ---------- ");
+    const data = await this.articleService.findAll(req, user);
     return data;
   }
 }

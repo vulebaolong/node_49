@@ -6,23 +6,19 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { cloudinary } from 'src/common/cloudinary/init.cloudinary';
 import { UploadApiResponse } from 'cloudinary';
+import { Users } from 'generated/prisma';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async avatarLocal(file: Express.Multer.File) {
+  async avatarLocal(file: Express.Multer.File, user: Users) {
     console.log(file);
     if (!file) {
       throw new BadRequestException('Chưa tìm thấy file');
     }
 
-    // TODO: fake tạm user do chưa xây dựng protect
-    const user = await this.prisma.users.findUnique({
-      where: {
-        id: 1,
-      },
-    });
+    
     if (!user) {
       throw new BadRequestException('Chưa tìm thấy user');
     }
@@ -61,17 +57,11 @@ export class UserService {
     };
   }
 
-  async avatarCloud(file: Express.Multer.File) {
+  async avatarCloud(file: Express.Multer.File, user: Users) {
     if (!file) {
       throw new BadRequestException('Chưa tìm thấy file');
     }
 
-    // TODO: fake tạm user do chưa xây dựng protect
-    const user = await this.prisma.users.findUnique({
-      where: {
-        id: 1,
-      },
-    });
     if (!user) {
       throw new BadRequestException('Chưa tìm thấy user');
     }

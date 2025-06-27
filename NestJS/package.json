@@ -1,5 +1,5 @@
 {
-  "name": "NestJS",
+  "name": "NestJS1",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -34,6 +34,7 @@
     "class-validator": "^0.14.2",
     "cloudinary": "^2.7.0",
     "nodemailer": "^7.0.3",
+    "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
