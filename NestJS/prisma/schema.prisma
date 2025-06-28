@@ -133,6 +133,7 @@ model Users {
   deletedAt        DateTime?          @db.Timestamp(0)
   createdAt        DateTime           @default(now()) @db.Timestamp(0)
   updatedAt        DateTime           @default(now()) @db.Timestamp(0)
+  totpSecret       String?            @db.VarChar(255)
   Articles         Articles[]
   ChatGroupMembers ChatGroupMembers[]
   ChatGroups       ChatGroups[]

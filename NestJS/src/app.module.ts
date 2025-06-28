@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { TokenModule } from './modules/token/token.module';
 import { ProtectStrategyStep2 } from './modules/auth/protect/protect.strategy';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { TotpModule } from './modules/totp/totp.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
     UserModule,
     AuthModule,
     TokenModule,
+    TotpModule,
   ],
   controllers: [AppController],
   providers: [AppService, ProtectStrategyStep2],

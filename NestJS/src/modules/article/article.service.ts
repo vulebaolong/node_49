@@ -8,6 +8,7 @@ export class ArticleService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(req: any, user: Users) {
+    
     // console.log({ user });
     let { page, pageSize, filters } = req.query;
     page = +page > 0 ? +page : 1;

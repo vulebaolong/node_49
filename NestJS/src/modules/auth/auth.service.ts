@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { TokenService } from '../token/token.service';
 import { sendMail } from 'src/common/nodemailer/init.nodemailer';
+import { authenticator } from 'otplib';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
   ) {}
 
   async login(body: LoginDto) {
-    const { email, password } = body;
+    const { email, password, token } = body;
 
     const userExist = await this.prisma.users.findUnique({
       where: {
@@ -31,6 +32,16 @@ export class AuthService {
       throw new BadRequestException(
         'Cần đăng nhập bằng MXH để cập nhật password',
       );
+    }
+
+    // Kiểm tra Google Authenticator
+    if (userExist.totpSecret) {
+      if (!token) {
+        return { isTotp: true };
+      }
+
+      const isCheck = authenticator.check(token, userExist.totpSecret);
+      if (!isCheck) throw new BadRequestException('Token không hợp lệ');
     }
 
     const isPassword = bcrypt.compareSync(password, userExist.password);
