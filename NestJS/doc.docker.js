@@ -50,4 +50,45 @@ docker push vulebaolong/img-be_cyber_community:latest
 # arm (chip apple): arm64
 #     - docker build --platform=linux/arm64
 
+ls -la
+   - show tất cả các folder đang có
+
+cd duong_dan_ten_folder
+   - truy cập cập vào folder
+
+chạy kết nối giữa github và server
+sudo ./svc.sh install
+sudo ./svc.sh start
+
+touch docker-compose.yml
+   - tạo file
+
+sudo su
+   - kẹp quyền sudo để tránh mỗi làn gõ lệnh docker phải kèm sudo
+exit
+   - thoát chế độ sudo su
+
+
+dấu port với Nginx
+
+sudo apt update
+sudo apt install nginx
+
+sudo nano /etc/nginx/sites-available/default
+   - mở file cấu hình
+
+xoá nhanh code trong nginnx
+ctrl + K
+   - xoá theo dòng
+
+code code từ file nginx_hidden_port vào
+save: ctrl + O
+
+sudo nginx -t
+   - kiểm tra cấu hình
+
+sudo systemctl restart nginx
+   - chạy lại nginnx
+
+
  */

@@ -15,6 +15,9 @@ RUN npx prisma generate
 
 RUN npm run build
 
+# xoá thư viện devDependencies
+RUN npm prune --production
+
 # stage 2: start project
 FROM node:24-alpine
 
@@ -29,3 +32,4 @@ CMD ["node", "dist/main.js"]
 
 # 2.07GB
 # 500MB
+# 350MB
